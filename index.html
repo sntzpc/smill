@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Ujian Komprehensif KLP1 MILL</title>
+  <!-- Favicon (ikon pabrik 🏭 yang relevan dengan Mill) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Ctext y='54' x='6' font-size='56'%3E%F0%9F%8F%AD%3C/text%3E%3C/svg%3E" />
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+    :root{
+      --primary:#8B0000; --primary-light:#A52A2A; --secondary:#DAA520;
+      --dark:#5D0000; --light:#FFF5F5; --gray:#757575; --white:#FFFFFF;
+      --shadow:0 4px 6px rgba(0,0,0,.1);
+    }
+
+    body{ background:#f9f5f5; color:#333; line-height:1.6; }
+    .container{ max-width:100%; margin:0 auto; padding:15px; }
+
+    header{ background:linear-gradient(135deg,var(--primary),var(--dark)); color:#fff; padding:20px 15px; border-radius:0 0 15px 15px; box-shadow:var(--shadow); margin-bottom:20px; text-align:center; }
+    .logo{ display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:6px; }
+    .logo i{ font-size:2.2rem; }
+    h1{ font-size:1.5rem; }
+    .subtitle{ font-size:.9rem; opacity:.9; }
+
+    .info-panel{ background:var(--white); border-radius:10px; padding:15px; margin-bottom:20px; box-shadow:var(--shadow); display:flex; align-items:center; border-left:4px solid var(--primary); gap:12px; }
+    .info-icon{ background:var(--primary-light); color:#fff; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+
+    .materials-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:15px; margin-bottom:20px; }
+    .material-card{ background:var(--white); border-radius:10px; padding:15px; text-align:center; box-shadow:var(--shadow); transition:.3s; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:140px; border-top:3px solid var(--primary); position:relative; }
+    .material-card:hover{ transform:translateY(-4px); box-shadow:0 6px 12px rgba(139,0,0,.15); }
+    .material-icon{ background:var(--light); color:var(--primary); width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:10px; font-size:1.4rem; }
+    .material-title{ font-weight:600; font-size:.9rem; margin-bottom:6px; color:var(--dark); }
+    .material-status{ font-size:.7rem; padding:3px 8px; border-radius:20px; background:var(--light); color:var(--gray); }
+    .material-status.completed{ background:#FFE8E8; color:var(--primary); }
+    .material-status.in-progress{ background:#FFF0E8; color:#FF8C00; }
+
+    .instructions{ background:var(--white); border-radius:10px; padding:15px; margin-bottom:20px; box-shadow:var(--shadow); border-left:4px solid var(--primary); }
+    .instructions h3{ color:var(--primary); margin-bottom:10px; display:flex; align-items:center; gap:10px; }
+    .instructions ol{ padding-left:20px; }
+    .instructions li{ margin-bottom:8px; font-size:.9rem; }
+
+    footer{ text-align:center; padding:15px; color:var(--gray); font-size:.8rem; }
+
+    /* Progress */
+    .progress-container{ background:var(--white); border-radius:10px; padding:15px; margin-bottom:20px; box-shadow:var(--shadow); }
+    .progress-header{ display:flex; justify-content:space-between; margin-bottom:10px; }
+    .progress-bar{ height:10px; background:#e0e0e0; border-radius:5px; overflow:hidden; }
+    .progress-fill{ height:100%; background:linear-gradient(90deg,var(--primary),var(--primary-light)); border-radius:5px; width:0%; transition:width .5s ease; }
+
+    /* Modal */
+    .modal{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:1000; align-items:center; justify-content:center; padding:15px; }
+    .modal-content{ background:var(--white); border-radius:15px; width:100%; max-width:520px; padding:20px; box-shadow:0 10px 25px rgba(0,0,0,.2); position:relative; animation:modalFadeIn .25s; border-top:5px solid var(--primary); }
+    @keyframes modalFadeIn{ from{opacity:0; transform:translateY(-12px);} to{opacity:1; transform:translateY(0);} }
+    .close-modal{ position:absolute; top:15px; right:15px; font-size:1.4rem; cursor:pointer; color:var(--gray); }
+    .modal-header{ margin-bottom:12px; padding-right:30px; }
+    .modal-header h2{ color:var(--primary); font-size:1.2rem; }
+    .modal-body{ margin-bottom:14px; }
+
+    .btn{ display:inline-block; background:linear-gradient(135deg,var(--primary),var(--primary-light)); color:#fff; padding:10px 16px; border-radius:30px; text-decoration:none; font-weight:600; text-align:center; border:none; cursor:pointer; transition:.25s; box-shadow:0 4px 6px rgba(0,0,0,.1); width:100%; }
+    .btn:hover{ transform:translateY(-2px); box-shadow:0 6px 8px rgba(139,0,0,.2); }
+    .btn-secondary{ background:linear-gradient(135deg,#757575,#9E9E9E); }
+    .btn-plain{ background:#eee; color:#333; }
+
+    @media (max-width:480px){
+      .materials-grid{ grid-template-columns:repeat(2,1fr); }
+      h1{ font-size:1.3rem; }
+      .material-card{ min-height:120px; padding:10px; }
+      .material-icon{ width:42px; height:42px; font-size:1.2rem; }
+    }
+    @media (max-width:350px){ .materials-grid{ grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <i class="fas fa-industry" aria-hidden="true"></i>
+      <div>
+        <h1>Dashboard Ujian Komprehensif KLP1 MILL</h1>
+        <div class="subtitle">Seriang Training Center – Karyamas Plantation</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="info-panel" role="note">
+      <div class="info-icon" aria-hidden="true"><i class="fas fa-info-circle"></i></div>
+      <div>
+        <strong>Informasi Ujian</strong><br />
+        Klik kartu materi untuk membuka soal (Google Forms). Aplikasi ini bisa dibuka offline, namun tautan soal tetap memerlukan internet.
+      </div>
+    </div>
+
+    <div class="progress-container" aria-label="Progress Ujian">
+      <div class="progress-header">
+        <span>Progress Ujian</span><span id="progressText">0/0 Materi</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <div class="materials-grid" id="materialsContainer" aria-live="polite"></div>
+
+    <div class="instructions">
+      <h3><i class="fas fa-list-alt"></i> Petunjuk Pengerjaan</h3>
+      <ol>
+        <li>Klik kartu materi untuk membuka soal ujian.</li>
+        <li>Pastikan koneksi internet stabil saat mengerjakan Google Forms.</li>
+        <li>Status pengerjaan bisa ditandai: <em>Belum</em> → <em>Dalam Proses</em> → <em>Selesai</em>.</li>
+        <li>Progress akan terhitung otomatis dan tersimpan di perangkat (localStorage).</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Modal konfirmasi & kontrol status -->
+  <div class="modal" id="linkModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-content">
+      <span class="close-modal" id="closeModal" title="Tutup">&times;</span>
+      <div class="modal-header"><h2 id="modalTitle">Judul Materi</h2></div>
+      <div class="modal-body">
+        <p>Anda akan diarahkan ke soal untuk materi: <strong id="materialName">Nama Materi</strong>.</p>
+        <p>Tip: klik <em>Tandai Selesai</em> setelah submit agar progress terhitung.</p>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <a href="#" class="btn" id="confirmLink">Buka Soal Ujian</a>
+        <button class="btn-plain" id="btnMarkInProgress">Tandai Dalam Proses</button>
+        <button class="btn" id="btnMarkDone" style="background:linear-gradient(135deg,#0f9d58,#34a853);">Tandai Selesai</button>
+        <button class="btn-secondary" id="cancelLink">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Seriang Training Center – Karyamas Plantation &copy; 2025</p>
+  </footer>
+
+  <script>
+    // =====================
+    // Data Materi (16 item)
+    // =====================
+    const materials = [
+      { id: 1,  title: 'Sistem Manajemen K3',                 icon: 'fa-solid fa-helmet-safety',     status: 'pending',     link: 'https://forms.gle/SgwD82BZg2uGxUAu9' },
+      { id: 2,  title: 'Loading Ramp Station',                icon: 'fa-solid fa-truck-ramp-box',    status: 'pending',     link: 'https://forms.gle/XZUoAsFS8MWsPYp58' },
+      { id: 3,  title: 'Grading TBS',                         icon: 'fa-solid fa-list-check',        status: 'pending',     link: 'https://forms.gle/6AK6T3EkZTThy9mU7' },
+      { id: 4,  title: 'Sterilizer Station',                  icon: 'fa-solid fa-temperature-high',  status: 'pending',     link: 'https://forms.gle/bm43B9CrfJGo9nsx8' },
+      { id: 5,  title: 'Thresher Station',                    icon: 'fa-solid fa-fan',               status: 'pending',     link: 'https://forms.gle/XU5eiphWFAF2X1qS9' },
+      { id: 6,  title: 'Digester dan Press Station',          icon: 'fa-solid fa-oil-can',           status: 'pending',     link: 'https://forms.gle/2yMEoroWWGxR9xW19' },
+      { id: 7,  title: 'Clarification Station',               icon: 'fa-solid fa-filter',            status: 'pending',     link: 'https://forms.gle/iWMmD2cSVALVmYhb9' },
+      { id: 8,  title: 'Nut and Kernel Station',              icon: 'fa-solid fa-seedling',          status: 'pending',     link: 'https://forms.gle/QyXmhYkGTWCGsNLU8' },
+      { id: 9,  title: 'Engine Room',                         icon: 'fa-solid fa-gears',             status: 'pending',     link: 'https://forms.gle/qBvLvQ6TKuyErQix5' },
+      { id: 10, title: 'Boiler Station',                      icon: 'fa-solid fa-fire',              status: 'pending',     link: 'https://forms.gle/JfCqWfDQSYUcTBdA6' },
+      { id: 11, title: 'Water Treatment Plant',               icon: 'fa-solid fa-water',             status: 'pending',     link: 'https://forms.gle/SsUVcYE8XQGaKhNc9' },
+      { id: 12, title: 'Dispatch',                            icon: 'fa-solid fa-truck',             status: 'pending',     link: 'https://forms.gle/DxoZufyJeEFw7eCu7' },
+      { id: 13, title: 'Kernel Crushing Plant (KCP)',         icon: 'fa-solid fa-industry',          status: 'pending',     link: 'https://forms.gle/E79EcA9khA8LuRSD9' },
+      { id: 14, title: 'Mill Operation Trouble Shooting',     icon: 'fa-solid fa-screwdriver-wrench',status: 'pending',     link: 'https://forms.gle/u1bPWWEkWdyM43sf8' },
+      { id: 15, title: 'Manajemen Kerja Staff',               icon: 'fa-solid fa-users-gear',        status: 'pending',     link: 'https://forms.gle/DUD4D9v1Tw3dEodd8' },
+      { id: 16, title: 'Membangun Prilaku Unggul',            icon: 'fa-solid fa-star',              status: 'pending',     link: 'https://forms.gle/Kj2LBqzhQB1o1rDJ7' },
+    ];
+
+    // =====================
+    // Persistensi Status (LocalStorage)
+    // =====================
+    const STORAGE_KEY = 'examMaterialsMILL_v2_status';
+
+    function loadStatuses(){
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+    }
+    function saveStatuses(statusMap){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(statusMap||{}));
+    }
+    function applySavedStatuses(){
+      const map = loadStatuses();
+      materials.forEach(m => { if(map[m.id]) m.status = map[m.id]; });
+    }
+    function updateStatus(id, status){
+      const map = loadStatuses();
+      map[id] = status; saveStatuses(map);
+      const m = materials.find(x=>x.id===id); if(m) m.status = status;
+      renderMaterials();
+    }
+
+    // =====================
+    // Render & Progress
+    // =====================
+    const materialsContainer = document.getElementById('materialsContainer');
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+
+    function calculateProgress(){
+      const completed = materials.filter(m=>m.status==='completed').length;
+      const inProg    = materials.filter(m=>m.status==='in-progress').length;
+      const pct = ((completed + inProg*0.5) / materials.length) * 100;
+      progressFill.style.width = pct.toFixed(0) + '%';
+      progressText.textContent = `${completed}/${materials.length} Materi`;
+    }
+
+    function statusLabel(s){
+      if(s==='completed') return 'Selesai';
+      if(s==='in-progress') return 'Dalam Proses';
+      return 'Belum Dimulai';
+    }
+
+    function renderMaterials(){
+      materialsContainer.innerHTML = '';
+      materials.forEach(material => {
+        const card = document.createElement('div');
+        card.className = 'material-card';
+        card.innerHTML = `
+          <div class="material-icon"><i class="${material.icon}"></i></div>
+          <div class="material-title">${material.title}</div>
+          <div class="material-status ${material.status}">${statusLabel(material.status)}</div>
+        `;
+        card.addEventListener('click', ()=> openMaterialModal(material));
+        materialsContainer.appendChild(card);
+      });
+      calculateProgress();
+    }
+
+    // =====================
+    // Modal
+    // =====================
+    const linkModal = document.getElementById('linkModal');
+    const closeModal = document.getElementById('closeModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const materialName = document.getElementById('materialName');
+    const confirmLink = document.getElementById('confirmLink');
+    const cancelLink = document.getElementById('cancelLink');
+    const btnMarkDone = document.getElementById('btnMarkDone');
+    const btnMarkInProgress = document.getElementById('btnMarkInProgress');
+
+    let currentMaterial = null;
+
+    function openMaterialModal(material){
+      currentMaterial = material;
+      modalTitle.textContent = material.title;
+      materialName.textContent = material.title;
+      confirmLink.setAttribute('href', material.link);
+      confirmLink.setAttribute('target', '_blank');
+      confirmLink.setAttribute('rel', 'noopener');
+      linkModal.style.display = 'flex';
+    }
+    function closeMaterialModal(){ linkModal.style.display = 'none'; currentMaterial = null; }
+
+    closeModal.addEventListener('click', closeMaterialModal);
+    cancelLink.addEventListener('click', closeMaterialModal);
+    window.addEventListener('click', (e)=>{ if(e.target===linkModal) closeMaterialModal(); });
+
+    // Saat klik "Buka Soal" → tandai minimal "Dalam Proses"
+    confirmLink.addEventListener('click', (e)=>{
+      if(!currentMaterial) return;
+      if(currentMaterial.status==='pending') updateStatus(currentMaterial.id, 'in-progress');
+      // biarkan link terbuka di tab baru
+    });
+
+    btnMarkInProgress.addEventListener('click', ()=>{
+      if(!currentMaterial) return; updateStatus(currentMaterial.id, 'in-progress');
+    });
+    btnMarkDone.addEventListener('click', ()=>{
+      if(!currentMaterial) return; updateStatus(currentMaterial.id, 'completed');
+    });
+
+    // =====================
+    // Init
+    // =====================
+    document.addEventListener('DOMContentLoaded', ()=>{
+      applySavedStatuses();
+      renderMaterials();
+      // simpan daftar materi (readonly) untuk referensi offline
+      localStorage.setItem('examMaterialsMILL_v2_catalog', JSON.stringify(materials.map(({id,title,link})=>({id,title,link}))));
+    });
+  </script>
+</body>
+</html>
